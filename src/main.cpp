@@ -1,6 +1,17 @@
 #include <iostream>
+#include "game.h"
 
 int main() {
-    std::cout << "Hello World!" << "\n";
+    Game game;
+    bool init_result = game.Initialize();
+    
+
+    if(init_result)
+    {
+        game.Run();
+    }
+    
+    game.Shutdown();
+
     return 0;
 }

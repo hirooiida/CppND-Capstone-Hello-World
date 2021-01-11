@@ -2,9 +2,9 @@
 #include <random>
 #include "game.h"
 
-const int ego_thickness = 12;
+const int ego_thickness = 15;
 const int wall_thickness = 12;
-const int holl_width = 72;
+const int holl_width = 100;
 
 Game::Game():sdl_window_(nullptr), sdl_renderer_(nullptr), is_running_(true), last_time_(0)
 {
@@ -42,7 +42,7 @@ bool Game::Initialize(const std::size_t width, const std::size_t height)
     wall_horiz_position_.x = width + width / 2.0f;
     wall_horiz_position_.y = 0;
     
-    holl_horiz_position_ = height / 2.0f - holl_width / 2.0f;
+    holl_vert_position_ = height / 2.0f - holl_width / 2.0f;
 
     return true;
 }
@@ -137,16 +137,27 @@ void Game::UpdateGame()
         }
     }
 
-    wall_horiz_position_.x += wall_horiz_dir_ * 500.0f * delta_time;
+    wall_horiz_position_.x += wall_horiz_dir_ * 600.0f * delta_time;
     if (wall_horiz_dir_ < 0 && wall_horiz_position_.x < -w / 2.0f)
     {
         wall_horiz_position_.x = w + w / 2;
 
         std::random_device rnd{};
-        holl_horiz_position_ = rnd() % h - holl_width / 2;
+        holl_vert_position_ = rnd() % h - holl_width / 2.0f;
+
     } else if (wall_horiz_dir_ > 0 && wall_horiz_position_.x > w + w / 2.0f)
     {
         wall_horiz_dir_ = -1;
+    }
+
+    Vector2 diff;
+    diff.x = ego_position_.x - wall_horiz_position_.x;
+    diff.y = ego_position_.y - holl_vert_position_;
+    if (diff.x < 0) { diff.x *= -1; }
+    if (diff.x < wall_thickness && (diff.y > holl_width - ego_thickness || diff.y < 0))
+    {
+        std::cout << "Crash" << std::endl;
+        is_running_ = false;
     }
 
     last_time_ = SDL_GetTicks();
@@ -180,7 +191,7 @@ void Game::Render()
     SDL_SetRenderDrawColor(sdl_renderer_, 0x00, 0x00, 0x00, 0xFF);
     SDL_Rect horiz_holl{
         static_cast<int>(wall_horiz_position_.x - wall_thickness / 2),
-        static_cast<int>(holl_horiz_position_),
+        static_cast<int>(holl_vert_position_),
         wall_thickness,
         holl_width
     };

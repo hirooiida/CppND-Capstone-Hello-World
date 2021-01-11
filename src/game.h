@@ -34,7 +34,7 @@ private:
 
     float wall_horiz_dir_;
     Vector2 wall_horiz_position_;
-    float holl_horiz_position_;
+    float holl_vert_position_;
 
 };
 

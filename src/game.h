@@ -3,7 +3,6 @@
 
 #include <SDL.h>
 
-
 struct Vector2
 {
     float x;
@@ -14,7 +13,7 @@ class Game
 {
 public:
     Game();
-    bool Initialize();
+    bool Initialize(const std::size_t width, const std::size_t height);
     void Run();
     void Shutdown();
 

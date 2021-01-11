@@ -6,7 +6,7 @@ Game::Game():sdl_window_(nullptr), sdl_renderer_(nullptr), is_running_(true), la
 
 }
 
-bool Game::Initialize()
+bool Game::Initialize(const std::size_t width, const std::size_t height)
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "SDL could not initialize.\n";
@@ -15,7 +15,7 @@ bool Game::Initialize()
     }
 
     sdl_window_ = SDL_CreateWindow("Fugitive", SDL_WINDOWPOS_CENTERED,
-                                   SDL_WINDOWPOS_CENTERED, 800, 800, 0);
+                                   SDL_WINDOWPOS_CENTERED, width, height, 0);
 
     if (nullptr == sdl_window_) {
         std::cerr << "Window could not be created.\n";
@@ -30,8 +30,8 @@ bool Game::Initialize()
         return false;
     }
 
-    ego_position_.x = 400.0f;
-    ego_position_.y = 400.0f;
+    ego_position_.x = width / 2.0f;
+    ego_position_.y = height / 2.0f;
 
     return true;
 }
@@ -101,17 +101,32 @@ void Game::UpdateGame()
         delta_time = 0.05f;
     }
 
+    int w, h;
+    SDL_GetWindowSize(sdl_window_, &w, &h);
+
     if (ego_dir_.x != 0)
     {
-        ego_position_.x += ego_dir_.x * 1000.0f * delta_time;
+        if ((ego_position_.x <= 0 + 6 && ego_dir_.x < 0)
+          || (ego_position_.x > w - 6 && ego_dir_.x > 0))
+        {
+            // pass
+        } else {
+            ego_position_.x += ego_dir_.x * 1000.0f * delta_time;
+        }
     }
+
     if (ego_dir_.y != 0)
     {
-        ego_position_.y += ego_dir_.y * 1000.0f * delta_time;
+        if ((ego_position_.y <= 0 + 6 && ego_dir_.y < 0)
+          || (ego_position_.y >= h - 6 && ego_dir_.y > 0))
+        {
+            // pass
+        } else {
+            ego_position_.y += ego_dir_.y * 1000.0f * delta_time;
+        }
     }
 
     last_time_ = SDL_GetTicks();
-
 }
 
 void Game::Render()
@@ -123,8 +138,8 @@ void Game::Render()
     SDL_Rect ball{	
 		static_cast<int>(ego_position_.x - 5),
 		static_cast<int>(ego_position_.y - 5),
-		10,
-		10
+		12,
+		12
 	};
 	SDL_RenderFillRect(sdl_renderer_, &ball);
 

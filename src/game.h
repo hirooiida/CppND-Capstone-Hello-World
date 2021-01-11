@@ -31,6 +31,11 @@ private:
 
     Vector2 ego_dir_;
     Vector2 ego_position_;
+
+    float wall_horiz_dir_;
+    Vector2 wall_horiz_position_;
+    float holl_horiz_position_;
+
 };
 
 #endif

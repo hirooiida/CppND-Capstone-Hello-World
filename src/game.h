@@ -1,7 +1,9 @@
-#ifndef SNAKE_H
-#define SNAKE_H
+#ifndef GAME_H
+#define GAME_H
 
 #include <SDL.h>
+#include <vector>
+#include "wall.h"
 
 struct Vector2
 {
@@ -32,10 +34,7 @@ private:
     Vector2 ego_dir_;
     Vector2 ego_position_;
 
-    float wall_horiz_dir_;
-    Vector2 wall_horiz_position_;
-    float holl_vert_position_;
-
+    Wall walls_;
 };
 
 #endif

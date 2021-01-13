@@ -3,6 +3,7 @@
 #include "game.h"
 
 const int ego_thickness = 15;
+const int holl_width = 100;
 
 Game::Game():sdl_window_(nullptr), sdl_renderer_(nullptr), is_running_(true), last_time_(0)
 {
@@ -36,14 +37,30 @@ bool Game::Initialize(const std::size_t width, const std::size_t height)
     ego_position_.x = ego_thickness / 2.0f;
     ego_position_.y = height / 2.0f;
 
-    Wall wall_1{width + width / 2.0f,
+    Wall wall_1{width + width * 0.0f,
                 -1,
-                height / 2.0f - walls_.holl_width_ / 2.0f,
-                100,
-                600,
+                height / 2.0f - holl_width / 2.0f,
+                150,
+                550,
+                12};
+    
+    Wall wall_2{width + width * 0.5f,
+                -1,
+                height / 2.0f + holl_width / 2.0f,
+                150,
+                550,
                 12};
 
-    walls_ = wall_1;
+    Wall wall_3{width + width * 1.0f,
+                -1,
+                height / 2.0f + holl_width / 2.0f,
+                150,
+                550,
+                12};
+
+    walls_.push_back(wall_1);
+    walls_.push_back(wall_2);
+    walls_.push_back(wall_3);
 
     return true;
 }
@@ -123,7 +140,7 @@ void Game::UpdateGame()
         {
             // pass
         } else {
-            ego_position_.x += ego_dir_.x * 800.0f * delta_time;
+            ego_position_.x += ego_dir_.x * 700.0f * delta_time;
         }
     }
 
@@ -134,32 +151,35 @@ void Game::UpdateGame()
         {
             // pass
         } else {
-            ego_position_.y += ego_dir_.y * 800.0f * delta_time;
+            ego_position_.y += ego_dir_.y * 700.0f * delta_time;
         }
     }
 
-    walls_.x_pos_ += walls_.x_dir_ * walls_.speed_ * delta_time;
-    if (walls_.x_dir_ < 0 && walls_.x_pos_ < -w / 2.0f)
+    for (Wall &wall: walls_)
     {
-        walls_.x_pos_ = w + w / 2;
+        wall.x_pos_ += wall.x_dir_ * wall.speed_ * delta_time;
+        if (wall.x_dir_ < 0 && wall.x_pos_ < -w / 2.0f)
+        {
+            wall.x_pos_ = w + w / 10;
 
-        std::random_device rnd{};
-        walls_.holl_height_ = rnd() % h - walls_.holl_width_ / 2.0f;
-        walls_.speed_ = 400.0f + rnd() % 600;
+            std::random_device rnd{};
+            wall.holl_height_ = rnd() % h - wall.holl_width_ / 2.0f;
+            wall.speed_ = 450.0f + rnd() % 100;
 
-    } else if (walls_.x_dir_ > 0 && walls_.x_pos_ > w + w / 2.0f)
-    {
-        walls_.x_dir_ = -1;
-    }
+        } else if (wall.x_dir_ > 0 && wall.x_pos_ > w + w / 2.0f)
+        {
+            wall.x_dir_ = -1;
+        }
 
-    Vector2 diff;
-    diff.x = ego_position_.x - walls_.x_pos_;
-    diff.y = ego_position_.y - walls_.holl_height_;
-    if (diff.x < 0) { diff.x *= -1; }
-    if (diff.x < walls_.thickness_ && (diff.y > walls_.holl_width_ - ego_thickness || diff.y < 0))
-    {
-        std::cout << "Crash" << std::endl;
-        is_running_ = false;
+        Vector2 diff;
+        diff.x = ego_position_.x - wall.x_pos_;
+        diff.y = ego_position_.y - wall.holl_height_;
+        if (diff.x < 0) { diff.x *= -1; }
+        if (diff.x < wall.thickness_ && (diff.y > wall.holl_width_ - ego_thickness || diff.y < 0))
+        {
+            std::cout << "Crash" << std::endl;
+            is_running_ = false;
+        }
     }
 
     last_time_ = SDL_GetTicks();
@@ -182,22 +202,26 @@ void Game::Render()
 	};
 	SDL_RenderFillRect(sdl_renderer_, &ball);
 
-    SDL_Rect horiz_wall{
-        static_cast<int>(walls_.x_pos_ - walls_.thickness_ / 2),
-        static_cast<int>(0),
-        12,
-        h
-    };
-    SDL_RenderFillRect(sdl_renderer_, &horiz_wall);
+    for (Wall &wall: walls_)
+    {
+        SDL_SetRenderDrawColor(sdl_renderer_, 255, 255, 255, 255);
+        SDL_Rect horiz_wall{
+            static_cast<int>(wall.x_pos_ - wall.thickness_ / 2),
+            static_cast<int>(0),
+            12,
+            h
+        };
+        SDL_RenderFillRect(sdl_renderer_, &horiz_wall);
 
-    SDL_SetRenderDrawColor(sdl_renderer_, 0x00, 0x00, 0x00, 0xFF);
-    SDL_Rect horiz_holl{
-        static_cast<int>(walls_.x_pos_ - walls_.thickness_ / 2),
-        static_cast<int>(walls_.holl_height_),
-        static_cast<int>(walls_.thickness_),
-        static_cast<int>(walls_.holl_width_)
-    };
-    SDL_RenderFillRect(sdl_renderer_, &horiz_holl);
+        SDL_SetRenderDrawColor(sdl_renderer_, 0x00, 0x00, 0x00, 0xFF);
+        SDL_Rect horiz_holl{
+            static_cast<int>(wall.x_pos_ - wall.thickness_ / 2),
+            static_cast<int>(wall.holl_height_),
+            static_cast<int>(wall.thickness_),
+            static_cast<int>(wall.holl_width_)
+        };
+        SDL_RenderFillRect(sdl_renderer_, &horiz_holl);
+    }
 
     SDL_RenderPresent(sdl_renderer_);
 }

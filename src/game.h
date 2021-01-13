@@ -34,7 +34,7 @@ private:
     Vector2 ego_dir_;
     Vector2 ego_position_;
 
-    Wall walls_;
+    std::vector<Wall> walls_;
 };
 
 #endif

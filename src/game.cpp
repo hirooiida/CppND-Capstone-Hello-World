@@ -3,6 +3,7 @@
 #include "game.h"
 
 const int ego_thickness = 15;
+const int food_thickness = 30;
 const int holl_width = 100;
 
 Game::Game():sdl_window_(nullptr), sdl_renderer_(nullptr), is_running_(true), last_time_(0)
@@ -36,6 +37,9 @@ bool Game::Initialize(const std::size_t width, const std::size_t height)
 
     ego_position_.x = ego_thickness / 2.0f;
     ego_position_.y = height / 2.0f;
+
+    food_position_.x = width / 2.0f;
+    food_position_.y = height / 2.0f;
 
     Wall wall_1{width + width * 0.0f,
                 -1,
@@ -155,6 +159,19 @@ void Game::UpdateGame()
         }
     }
 
+    Vector2 f_diff;
+    f_diff.x = ego_position_.x - food_position_.x;
+    f_diff.y = ego_position_.y - food_position_.y;
+    if (f_diff.x < 0) {f_diff.x *= -1;}
+    if (f_diff.y < 0) {f_diff.y *= -1;}
+    if (f_diff.x < (ego_thickness + food_thickness) / 2.0f
+        && f_diff.y < (ego_thickness + food_thickness) / 2.0f)
+    {
+        std::random_device rnd{};
+        food_position_.x = rnd() % static_cast<int>(w * 0.6f) + w * 0.2f;
+        food_position_.y = rnd() % static_cast<int>(h * 0.6f) + h * 0.2f;
+    }
+
     for (Wall &wall: walls_)
     {
         wall.x_pos_ += wall.x_dir_ * wall.speed_ * delta_time;
@@ -222,6 +239,15 @@ void Game::Render()
         };
         SDL_RenderFillRect(sdl_renderer_, &horiz_holl);
     }
+
+    SDL_SetRenderDrawColor(sdl_renderer_, 255, 120, 28, 255);
+    SDL_Rect food{	
+		static_cast<int>(food_position_.x - food_thickness / 2),
+		static_cast<int>(food_position_.y - food_thickness / 2),
+		food_thickness,
+		food_thickness
+	};
+	SDL_RenderFillRect(sdl_renderer_, &food);
 
     SDL_RenderPresent(sdl_renderer_);
 }

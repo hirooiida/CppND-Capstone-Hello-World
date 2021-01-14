@@ -34,6 +34,8 @@ private:
     Vector2 ego_dir_;
     Vector2 ego_position_;
 
+    Vector2 food_position_;
+
     std::vector<Wall> walls_;
 };
 

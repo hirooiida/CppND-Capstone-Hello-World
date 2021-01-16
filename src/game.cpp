@@ -11,24 +11,8 @@ Game::Game(const std::size_t width, const std::size_t height)
     is_running_ = true;
     last_time_ = 0;
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cerr << "SDL could not initialize.\n";
-        std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
-    }
-
-    sdl_window_ = SDL_CreateWindow("Fugitive", SDL_WINDOWPOS_CENTERED,
-                                   SDL_WINDOWPOS_CENTERED, width, height, 0);
-
-    if (nullptr == sdl_window_) {
-        std::cerr << "Window could not be created.\n";
-        std::cerr << " SDL_Error: " << SDL_GetError() << "\n";
-    }
-
-    sdl_renderer_ = SDL_CreateRenderer(sdl_window_, -1, SDL_RENDERER_ACCELERATED);
-    if (nullptr == sdl_renderer_) {
-        std::cerr << "Renderer could not be created.\n";
-        std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
-    }
+    window_width_ = width;
+    window_height_ = height;
 
     ego_position_.x = ego_thickness / 2.0f;
     ego_position_.y = height / 2.0f;
@@ -62,21 +46,14 @@ Game::Game(const std::size_t width, const std::size_t height)
     walls_.push_back(wall_3);
 }
 
-void Game::Run(Controller controller)
+void Game::Run(Controller controller, Renderer renderer)
 {
     while(is_running_)
     {
         controller.HandleInput(is_running_, ego_dir_);
         UpdateGame();
-        Render();
+        renderer.Render(ego_position_, walls_, food_position_);
     } 
-}
-
-void Game::Shutdown()
-{
-    SDL_DestroyRenderer(sdl_renderer_);
-	SDL_DestroyWindow(sdl_window_);
-	SDL_Quit();
 }
 
 void Game::UpdateGame()
@@ -90,7 +67,8 @@ void Game::UpdateGame()
     }
 
     int w, h;
-    SDL_GetWindowSize(sdl_window_, &w, &h);
+    w = window_width_;
+    h = window_height_;
 
     if (ego_dir_.x != 0)
     {
@@ -157,52 +135,3 @@ void Game::UpdateGame()
     last_time_ = SDL_GetTicks();
 }
 
-void Game::Render()
-{
-    int w, h;
-    SDL_GetWindowSize(sdl_window_, &w, &h);
-
-    SDL_SetRenderDrawColor(sdl_renderer_, 0x00, 0x00, 0x00, 0xFF);
-    SDL_RenderClear(sdl_renderer_);
-
-    SDL_SetRenderDrawColor(sdl_renderer_, 255, 255, 255, 255);
-    SDL_Rect ball{	
-		static_cast<int>(ego_position_.x - ego_thickness / 2),
-		static_cast<int>(ego_position_.y - ego_thickness / 2),
-		ego_thickness,
-		ego_thickness
-	};
-	SDL_RenderFillRect(sdl_renderer_, &ball);
-
-    for (Wall &wall: walls_)
-    {
-        SDL_SetRenderDrawColor(sdl_renderer_, 255, 255, 255, 255);
-        SDL_Rect horiz_wall{
-            static_cast<int>(wall.x_pos - wall.thickness / 2),
-            static_cast<int>(0),
-            12,
-            h
-        };
-        SDL_RenderFillRect(sdl_renderer_, &horiz_wall);
-
-        SDL_SetRenderDrawColor(sdl_renderer_, 0x00, 0x00, 0x00, 0xFF);
-        SDL_Rect horiz_holl{
-            static_cast<int>(wall.x_pos - wall.thickness / 2),
-            static_cast<int>(wall.holl_height),
-            static_cast<int>(wall.thickness),
-            static_cast<int>(wall.holl_width)
-        };
-        SDL_RenderFillRect(sdl_renderer_, &horiz_holl);
-    }
-
-    SDL_SetRenderDrawColor(sdl_renderer_, 255, 120, 28, 255);
-    SDL_Rect food{	
-		static_cast<int>(food_position_.x - food_thickness / 2),
-		static_cast<int>(food_position_.y - food_thickness / 2),
-		food_thickness,
-		food_thickness
-	};
-	SDL_RenderFillRect(sdl_renderer_, &food);
-
-    SDL_RenderPresent(sdl_renderer_);
-}

@@ -16,6 +16,7 @@ add_executable(Game
                src/main.cpp
                src/game.cpp
                src/controller.cpp
+               src/renderer.cpp
                )
 
 string(STRIP ${SDL2_LIBRARIES} SDL2_LIBRARIES)

@@ -3,12 +3,12 @@
 
 struct Wall
 {
-    float x_pos_;
-    float x_dir_;
-    float holl_height_;
-    float holl_width_;
-    float speed_;
-    float thickness_;
+    float x_pos;
+    float x_dir;
+    float holl_height;
+    float holl_width;
+    float speed;
+    float thickness;
 };
 
 #endif

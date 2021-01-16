@@ -6,14 +6,10 @@ int main() {
     constexpr std::size_t kScreenWidth{1280};
     constexpr std::size_t kScreenHeight{768};
 
-    Game game;
+    Game game(kScreenWidth, kScreenHeight);
     Controller controller;
-    bool init_result = game.Initialize(kScreenWidth, kScreenHeight);
     
-    if(init_result)
-    {
-        game.Run(controller);
-    }
+    game.Run(controller);
     
     game.Shutdown();
 

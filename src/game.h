@@ -10,8 +10,8 @@
 class Game
 {
 public:
-    Game();
-    bool Initialize(const std::size_t width, const std::size_t height);
+    Game(const std::size_t width, const std::size_t height);
+
     void Run(Controller controller);
     void Shutdown();
 

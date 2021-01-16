@@ -69,11 +69,11 @@ bool Game::Initialize(const std::size_t width, const std::size_t height)
     return true;
 }
 
-void Game::Run()
+void Game::Run(Controller controller)
 {
     while(is_running_)
     {
-        HandleInput();
+        controller.HandleInput(is_running_, ego_dir_);
         UpdateGame();
         Render();
     } 
@@ -84,44 +84,6 @@ void Game::Shutdown()
     SDL_DestroyRenderer(sdl_renderer_);
 	SDL_DestroyWindow(sdl_window_);
 	SDL_Quit();
-}
-
-void Game::HandleInput()
-{
-    SDL_Event e;
-    while (SDL_PollEvent(&e))
-    {
-        if (e.type == SDL_QUIT)
-        {
-            is_running_ = false;
-            break;
-        }
-    }
-
-    const Uint8* state = SDL_GetKeyboardState(NULL);
-
-	if (state[SDL_SCANCODE_ESCAPE])
-	{
-		is_running_ = false;
-	}
-
-	ego_dir_ = {0, 0};
-	if (state[SDL_SCANCODE_W])
-	{
-		ego_dir_.y -= 1;
-	}
-	if (state[SDL_SCANCODE_S])
-	{
-		ego_dir_.y += 1;
-	}
-    if (state[SDL_SCANCODE_D])
-	{
-		ego_dir_.x += 1;
-	}
-    if (state[SDL_SCANCODE_A])
-	{
-		ego_dir_.x -= 1;
-	}
 }
 
 void Game::UpdateGame()

@@ -4,23 +4,18 @@
 #include <SDL.h>
 #include <vector>
 #include "wall.h"
-
-struct Vector2
-{
-    float x;
-    float y;
-};
+#include "controller.h"
+#include "vector2.h"
 
 class Game
 {
 public:
     Game();
     bool Initialize(const std::size_t width, const std::size_t height);
-    void Run();
+    void Run(Controller controller);
     void Shutdown();
 
 private:
-    void HandleInput();
     void UpdateGame();
     void Render();
 

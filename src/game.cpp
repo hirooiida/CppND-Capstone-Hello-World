@@ -20,21 +20,22 @@ Game::Game(Config config)
                 config_.screen_height / 2.0f - config_.holl_width / 2.0f,  // holl_height
                 150,                                                       // holl_width
                 550,                                                       // speed
-                30};                                                       // thickness
+                config_.wall_thickness                                     // thickness
+                };
     
     Wall wall_2{config_.screen_width + config_.screen_width * 0.5f,
                 -1,
                 config_.screen_height / 2.0f + config_.holl_width / 2.0f,
                 150,
                 550,
-                30};
+                config_.wall_thickness};
 
     Wall wall_3{config_.screen_width + config_.screen_width * 1.0f,
                 -1,
                 config_.screen_height / 2.0f + config_.holl_width / 2.0f,
                 150,
                 550,
-                30};
+                config_.wall_thickness};
 
     walls_.push_back(wall_1);
     walls_.push_back(wall_2);

@@ -8,8 +8,10 @@ int main() {
     Config config{1280,    // screen width
                   768,     // screen height
                   18,      // ego thickness
-                  30,      // food_thickness
-                  100};    // holl width
+                  30,      // food thickness
+                  25.0f,   // wall thickness
+                  100      // holl width
+                  };
 
     Renderer renderer(config);
     Controller controller;

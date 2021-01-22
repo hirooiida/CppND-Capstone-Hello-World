@@ -7,6 +7,7 @@ struct Config
     std::size_t screen_height;
     int ego_thickness;
     int food_thickness;
+    float wall_thickness;
     int holl_width;
 };
 

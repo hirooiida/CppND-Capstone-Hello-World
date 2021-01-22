@@ -2,44 +2,39 @@
 #include <random>
 #include "game.h"
 
-const int ego_thickness = 15;
-const int food_thickness = 30;
-const int holl_width = 100;
-
-Game::Game(const std::size_t width, const std::size_t height)
+Game::Game(Config config)
 {
     is_running_ = true;
     last_time_ = 0;
 
-    window_width_ = width;
-    window_height_ = height;
+    config_ = config;
 
-    ego_position_.x = ego_thickness / 2.0f;
-    ego_position_.y = height / 2.0f;
+    ego_position_.x = config_.ego_thickness / 2.0f;
+    ego_position_.y = config_.screen_height / 2.0f;
 
-    food_position_.x = width / 2.0f;
-    food_position_.y = height / 2.0f;
+    food_position_.x = config_.screen_width / 2.0f;
+    food_position_.y = config_.screen_height / 2.0f;
 
-    Wall wall_1{width + width * 0.0f,
-                -1,
-                height / 2.0f - holl_width / 2.0f,
-                150,
-                550,
-                12};
+    Wall wall_1{config_.screen_width + config_.screen_width * 0.0f,        // x_pos
+                -1,                                                        // x_dir
+                config_.screen_height / 2.0f - config_.holl_width / 2.0f,  // holl_height
+                150,                                                       // holl_width
+                550,                                                       // speed
+                30};                                                       // thickness
     
-    Wall wall_2{width + width * 0.5f,
+    Wall wall_2{config_.screen_width + config_.screen_width * 0.5f,
                 -1,
-                height / 2.0f + holl_width / 2.0f,
+                config_.screen_height / 2.0f + config_.holl_width / 2.0f,
                 150,
                 550,
-                12};
+                30};
 
-    Wall wall_3{width + width * 1.0f,
+    Wall wall_3{config_.screen_width + config_.screen_width * 1.0f,
                 -1,
-                height / 2.0f + holl_width / 2.0f,
+                config_.screen_height / 2.0f + config_.holl_width / 2.0f,
                 150,
                 550,
-                12};
+                30};
 
     walls_.push_back(wall_1);
     walls_.push_back(wall_2);
@@ -67,8 +62,8 @@ void Game::UpdateGame()
     }
 
     int w, h;
-    w = window_width_;
-    h = window_height_;
+    w = config_.screen_width;
+    h = config_.screen_height;
 
     if (ego_dir_.x != 0)
     {
@@ -97,8 +92,8 @@ void Game::UpdateGame()
     f_diff.y = ego_position_.y - food_position_.y;
     if (f_diff.x < 0) {f_diff.x *= -1;}
     if (f_diff.y < 0) {f_diff.y *= -1;}
-    if (f_diff.x < (ego_thickness + food_thickness) / 2.0f
-        && f_diff.y < (ego_thickness + food_thickness) / 2.0f)
+    if (f_diff.x < (config_.ego_thickness + config_.food_thickness) / 2.0f
+        && f_diff.y < (config_.ego_thickness + config_.food_thickness) / 2.0f)
     {
         std::random_device rnd{};
         food_position_.x = rnd() % static_cast<int>(w * 0.6f) + w * 0.2f;
@@ -125,7 +120,7 @@ void Game::UpdateGame()
         diff.x = ego_position_.x - wall.x_pos;
         diff.y = ego_position_.y - wall.holl_height;
         if (diff.x < 0) { diff.x *= -1; }
-        if (diff.x < wall.thickness && (diff.y > wall.holl_width - ego_thickness || diff.y < 0))
+        if (diff.x < wall.thickness && (diff.y > wall.holl_width - config_.ego_thickness || diff.y < 0))
         {
             std::cout << "Crash" << std::endl;
             is_running_ = false;

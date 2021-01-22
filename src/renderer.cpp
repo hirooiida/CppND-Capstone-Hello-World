@@ -1,19 +1,17 @@
 #include <iostream>
 #include "renderer.h"
 
-const int ego_thickness = 15;
-const int food_thickness = 30;
-const int holl_width = 100;
-
-Renderer::Renderer(const std::size_t width, const std::size_t height)
+Renderer::Renderer(Config config)
 {
+    config_ = config;
+
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "SDL could not initialize.\n";
         std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
     }
 
     sdl_window_ = SDL_CreateWindow("Fugitive", SDL_WINDOWPOS_CENTERED,
-                                   SDL_WINDOWPOS_CENTERED, width, height, 0);
+                                   SDL_WINDOWPOS_CENTERED, config_.screen_width, config_.screen_height, 0);
 
     if (nullptr == sdl_window_) {
         std::cerr << "Window could not be created.\n";
@@ -44,10 +42,10 @@ void Renderer::Render(Vector2 ego_position, std::vector<Wall> walls, Vector2 foo
 
     SDL_SetRenderDrawColor(sdl_renderer_, 255, 255, 255, 255);
     SDL_Rect ball{	
-		static_cast<int>(ego_position.x - ego_thickness / 2),
-		static_cast<int>(ego_position.y - ego_thickness / 2),
-		ego_thickness,
-		ego_thickness
+		static_cast<int>(ego_position.x - config_.ego_thickness / 2),
+		static_cast<int>(ego_position.y - config_.ego_thickness / 2),
+		config_.ego_thickness,
+		config_.ego_thickness
 	};
 	SDL_RenderFillRect(sdl_renderer_, &ball);
 
@@ -57,7 +55,7 @@ void Renderer::Render(Vector2 ego_position, std::vector<Wall> walls, Vector2 foo
         SDL_Rect horiz_wall{
             static_cast<int>(wall.x_pos - wall.thickness / 2),
             static_cast<int>(0),
-            12,
+            static_cast<int>(wall.thickness),
             h
         };
         SDL_RenderFillRect(sdl_renderer_, &horiz_wall);
@@ -74,10 +72,10 @@ void Renderer::Render(Vector2 ego_position, std::vector<Wall> walls, Vector2 foo
 
     SDL_SetRenderDrawColor(sdl_renderer_, 255, 120, 28, 255);
     SDL_Rect food{	
-		static_cast<int>(food_position.x - food_thickness / 2),
-		static_cast<int>(food_position.y - food_thickness / 2),
-		food_thickness,
-		food_thickness
+		static_cast<int>(food_position.x - config_.food_thickness / 2),
+		static_cast<int>(food_position.y - config_.food_thickness / 2),
+		config_.food_thickness,
+		config_.food_thickness
 	};
 	SDL_RenderFillRect(sdl_renderer_, &food);
 

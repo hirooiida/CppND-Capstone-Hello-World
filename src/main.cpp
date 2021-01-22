@@ -2,14 +2,18 @@
 #include "game.h"
 #include "controller.h"
 #include "renderer.h"
+#include "config.h"
 
 int main() {
-    constexpr std::size_t kScreenWidth{1280};
-    constexpr std::size_t kScreenHeight{768};
+    Config config{1280,    // screen width
+                  768,     // screen height
+                  18,      // ego thickness
+                  30,      // food_thickness
+                  100};    // holl width
 
-    Renderer renderer(kScreenWidth, kScreenHeight);
+    Renderer renderer(config);
     Controller controller;
-    Game game(kScreenWidth, kScreenHeight);
+    Game game(config);
 
     game.Run(controller, renderer);
 

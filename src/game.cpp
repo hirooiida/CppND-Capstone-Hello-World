@@ -2,17 +2,18 @@
 #include <random>
 #include "game.h"
 
-const float ego_speed = 700.0f;
+const float ego_speed = 720.0f;
 const float base_wall_speed = 400.0f;
 const int dist_wall_speed = 20;
 static float accel_wall = 0.0f;
-const float inc_wall_speed = 10.0f;
+float inc_wall_speed = 10.0f;
 
 Game::Game(Config config)
 {
     is_running_ = true;
     last_time_ = 0;
-    score_ = 0;
+    food_score_ = 0;
+    wall_score_ = 0;
 
     config_ = config;
 
@@ -56,7 +57,7 @@ void Game::Run(Controller controller, Renderer renderer)
         controller.HandleInput(is_running_, ego_dir_);
         UpdateGame();
         renderer.Render(ego_position_, walls_, food_position_);
-        renderer.UpdateWindowTitle(score_);
+        renderer.UpdateWindowTitle(food_score_, wall_score_);
     } 
 }
 
@@ -100,7 +101,7 @@ void Game::UpdateGame()
     if (f_diff.x < (config_.ego_thickness + config_.food_thickness) / 2.0f
         && f_diff.y < (config_.ego_thickness + config_.food_thickness) / 2.0f)
     {
-        score_ += 10;
+        food_score_ += 10;
         std::random_device rnd{};
         food_position_.x = rnd() % static_cast<int>(config_.screen_width * 0.5f) + config_.screen_width * 0.15f;
         food_position_.y = rnd() % static_cast<int>(config_.screen_height * 0.5f) + config_.screen_height * 0.15f;
@@ -110,8 +111,11 @@ void Game::UpdateGame()
     {
         wall.x_pos += wall.x_dir * wall.speed * delta_time;
         if (wall.x_dir < 0 && wall.x_pos < -(config_.screen_width / 2.0f))
-        {
+        {   
+            ++wall_score_;
             accel_wall += inc_wall_speed;
+            if (accel_wall > base_wall_speed) {inc_wall_speed = 0;}
+
             wall.x_pos = config_.screen_width + config_.screen_width / 10;
 
             std::random_device rnd{};
@@ -136,7 +140,17 @@ void Game::UpdateGame()
     last_time_ = SDL_GetTicks();
 }
 
-int Game::GetScore()
+int Game::GetTotalScore()
 {
-    return score_;
+    return food_score_ + wall_score_;
+}
+
+int Game::GetFoodScore()
+{
+    return food_score_;
+}
+
+int Game::GetWallScore()
+{
+    return wall_score_;
 }

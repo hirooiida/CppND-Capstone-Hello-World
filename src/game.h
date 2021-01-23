@@ -15,7 +15,9 @@ public:
     Game(Config config);
 
     void Run(Controller controller, Renderer renderer);
-    int GetScore();
+    int GetTotalScore();
+    int GetFoodScore();
+    int GetWallScore();
 
 private:
     void UpdateGame();
@@ -24,7 +26,8 @@ private:
 
     bool is_running_;
     Uint32 last_time_;
-    int score_;
+    int food_score_;
+    int wall_score_;
 
     Vector2 ego_dir_;
     Vector2 ego_position_;

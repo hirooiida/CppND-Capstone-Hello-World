@@ -87,8 +87,12 @@ SDL_Window* Renderer::GetWindow()
     return sdl_window_;
 }
 
-void Renderer::UpdateWindowTitle(int score)
+void Renderer::UpdateWindowTitle(int food_score, int wall_score)
 {
-    std::string title{"Score: " + std::to_string(score)};
+    std::string title{"Total Score: " + std::to_string(food_score + wall_score)
+                     + " (Food Score: " + std::to_string(food_score)
+                     + " Wall Score: " + std::to_string(wall_score)
+                     + ")"
+                     };
     SDL_SetWindowTitle(sdl_window_, title.c_str());
 }

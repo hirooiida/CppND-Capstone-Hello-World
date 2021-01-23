@@ -8,9 +8,9 @@ int main() {
     Config config{1000,    // screen width
                   600,     // screen height
                   20,      // ego thickness
-                  30,      // food thickness
-                  25.0f,   // wall thickness
-                  300.0f   // holl width
+                  32,      // food thickness
+                  30.0f,   // wall thickness
+                  320.0f   // holl width
                   };
 
     Renderer renderer(config);
@@ -19,7 +19,9 @@ int main() {
 
     game.Run(controller, renderer);
 
-    std::cout << "Score: " << game.GetScore() << std::endl;
+    std::cout << "Food Score: " << game.GetFoodScore() << std::endl;
+    std::cout << "Wall Score: " << game.GetWallScore() << std::endl;
+    std::cout << "Total Score: " << game.GetTotalScore() << std::endl;
 
     return 0;
 }

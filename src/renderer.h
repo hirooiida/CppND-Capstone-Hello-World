@@ -15,7 +15,7 @@ public:
     ~Renderer();
     void Render(Vector2 ego_position, std::vector<Wall> walls, Vector2 food_position);
     SDL_Window* GetWindow();
-    void UpdateWindowTitle(int score);
+    void UpdateWindowTitle(int food_score, int wall_score);
 
 private:
     SDL_Window* sdl_window_;

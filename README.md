@@ -2,7 +2,7 @@
 
 This is a repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213).
 
-This is a simple scroll game where you can controll yellow spot by WASD keys. You can score by collecting orange "foods". The game will stop when you crash the walls.
+This is a simple scroll game where you can controll yellow spot by WASD keys. You can score by collecting orange food (+10pt) and avoid the wall collision (+1pt). The game ends when you crash the walls or press `ESC`.
 
 <img src="img/screenshot.png" height=300 title="game screenshot">
 

@@ -2,6 +2,12 @@
 #include <random>
 #include "game.h"
 
+const float ego_speed = 700.0f;
+const float base_wall_speed = 400.0f;
+const int dist_wall_speed = 20;
+static float accel_wall = 0.0f;
+const float inc_wall_speed = 10.0f;
+
 Game::Game(Config config)
 {
     is_running_ = true;
@@ -20,7 +26,7 @@ Game::Game(Config config)
                 -1,                                                        // x_dir
                 config_.screen_height / 2.0f - config_.holl_width / 2.0f,  // holl_height
                 config_.holl_width,                                        // holl_width
-                550,                                                       // speed
+                base_wall_speed,                                           // speed
                 config_.wall_thickness                                     // thickness
                 };
     
@@ -28,14 +34,14 @@ Game::Game(Config config)
                 -1,
                 config_.screen_height / 2.0f + config_.holl_width / 2.0f,
                 config_.holl_width,
-                550,
+                base_wall_speed,
                 config_.wall_thickness};
 
     Wall wall_3{config_.screen_width + config_.screen_width * 1.0f,
                 -1,
                 config_.screen_height / 2.0f + config_.holl_width / 2.0f,
                 config_.holl_width,
-                550,
+                base_wall_speed,
                 config_.wall_thickness};
 
     walls_.push_back(wall_1);
@@ -71,7 +77,7 @@ void Game::UpdateGame()
         {
             // pass
         } else {
-            ego_position_.x += ego_dir_.x * 700.0f * delta_time;
+            ego_position_.x += ego_dir_.x * ego_speed * delta_time;
         }
     }
 
@@ -82,7 +88,7 @@ void Game::UpdateGame()
         {
             // pass
         } else {
-            ego_position_.y += ego_dir_.y * 700.0f * delta_time;
+            ego_position_.y += ego_dir_.y * ego_speed * delta_time;
         }
     }
 
@@ -94,10 +100,10 @@ void Game::UpdateGame()
     if (f_diff.x < (config_.ego_thickness + config_.food_thickness) / 2.0f
         && f_diff.y < (config_.ego_thickness + config_.food_thickness) / 2.0f)
     {
-        ++score_;
+        score_ += 10;
         std::random_device rnd{};
-        food_position_.x = rnd() % static_cast<int>(config_.screen_width * 0.6f) + config_.screen_width * 0.2f;
-        food_position_.y = rnd() % static_cast<int>(config_.screen_height * 0.6f) + config_.screen_height * 0.2f;
+        food_position_.x = rnd() % static_cast<int>(config_.screen_width * 0.5f) + config_.screen_width * 0.15f;
+        food_position_.y = rnd() % static_cast<int>(config_.screen_height * 0.5f) + config_.screen_height * 0.15f;
     }
 
     for (Wall &wall: walls_)
@@ -105,11 +111,12 @@ void Game::UpdateGame()
         wall.x_pos += wall.x_dir * wall.speed * delta_time;
         if (wall.x_dir < 0 && wall.x_pos < -(config_.screen_width / 2.0f))
         {
+            accel_wall += inc_wall_speed;
             wall.x_pos = config_.screen_width + config_.screen_width / 10;
 
             std::random_device rnd{};
             wall.holl_height = rnd() % config_.screen_height - wall.holl_width / 2.0f;
-            wall.speed = 450.0f + rnd() % 100;
+            wall.speed = (base_wall_speed - dist_wall_speed / 2.0f) + rnd() % dist_wall_speed + accel_wall;
 
         } else if (wall.x_dir > 0 && wall.x_pos > config_.screen_width + config_.screen_width / 2.0f)
         {

@@ -5,12 +5,12 @@
 #include "config.h"
 
 int main() {
-    Config config{1280,    // screen width
-                  768,     // screen height
-                  18,      // ego thickness
+    Config config{1000,    // screen width
+                  600,     // screen height
+                  20,      // ego thickness
                   30,      // food thickness
                   25.0f,   // wall thickness
-                  150.0f   // holl width
+                  300.0f   // holl width
                   };
 
     Renderer renderer(config);

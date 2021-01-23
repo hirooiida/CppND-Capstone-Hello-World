@@ -70,8 +70,8 @@ void Game::UpdateGame()
 
     if (ego_dir_.x != 0)
     {
-        if ((ego_position_.x <= 0 + 6 && ego_dir_.x < 0)
-          || (ego_position_.x > w - 6 && ego_dir_.x > 0))
+        if ((ego_position_.x <= 0 + config_.ego_thickness / 2 && ego_dir_.x < 0)
+          || (ego_position_.x > w - config_.ego_thickness / 2 && ego_dir_.x > 0))
         {
             // pass
         } else {
@@ -81,8 +81,8 @@ void Game::UpdateGame()
 
     if (ego_dir_.y != 0)
     {
-        if ((ego_position_.y <= 0 + 6 && ego_dir_.y < 0)
-          || (ego_position_.y >= h - 6 && ego_dir_.y > 0))
+        if ((ego_position_.y <= 0 + config_.ego_thickness / 2 && ego_dir_.y < 0)
+          || (ego_position_.y >= h - config_.ego_thickness / 2 && ego_dir_.y > 0))
         {
             // pass
         } else {

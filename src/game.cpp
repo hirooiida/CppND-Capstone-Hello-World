@@ -64,14 +64,10 @@ void Game::UpdateGame()
         delta_time = 0.05f;
     }
 
-    int w, h;
-    w = config_.screen_width;
-    h = config_.screen_height;
-
     if (ego_dir_.x != 0)
     {
         if ((ego_position_.x <= 0 + config_.ego_thickness / 2 && ego_dir_.x < 0)
-          || (ego_position_.x > w - config_.ego_thickness / 2 && ego_dir_.x > 0))
+          || (ego_position_.x > config_.screen_width - config_.ego_thickness / 2 && ego_dir_.x > 0))
         {
             // pass
         } else {
@@ -82,7 +78,7 @@ void Game::UpdateGame()
     if (ego_dir_.y != 0)
     {
         if ((ego_position_.y <= 0 + config_.ego_thickness / 2 && ego_dir_.y < 0)
-          || (ego_position_.y >= h - config_.ego_thickness / 2 && ego_dir_.y > 0))
+          || (ego_position_.y >= config_.screen_height - config_.ego_thickness / 2 && ego_dir_.y > 0))
         {
             // pass
         } else {
@@ -100,22 +96,22 @@ void Game::UpdateGame()
     {
         ++score_;
         std::random_device rnd{};
-        food_position_.x = rnd() % static_cast<int>(w * 0.6f) + w * 0.2f;
-        food_position_.y = rnd() % static_cast<int>(h * 0.6f) + h * 0.2f;
+        food_position_.x = rnd() % static_cast<int>(config_.screen_width * 0.6f) + config_.screen_width * 0.2f;
+        food_position_.y = rnd() % static_cast<int>(config_.screen_height * 0.6f) + config_.screen_height * 0.2f;
     }
 
     for (Wall &wall: walls_)
     {
         wall.x_pos += wall.x_dir * wall.speed * delta_time;
-        if (wall.x_dir < 0 && wall.x_pos < -w / 2.0f)
+        if (wall.x_dir < 0 && wall.x_pos < -(config_.screen_width / 2.0f))
         {
-            wall.x_pos = w + w / 10;
+            wall.x_pos = config_.screen_width + config_.screen_width / 10;
 
             std::random_device rnd{};
-            wall.holl_height = rnd() % h - wall.holl_width / 2.0f;
+            wall.holl_height = rnd() % config_.screen_height - wall.holl_width / 2.0f;
             wall.speed = 450.0f + rnd() % 100;
 
-        } else if (wall.x_dir > 0 && wall.x_pos > w + w / 2.0f)
+        } else if (wall.x_dir > 0 && wall.x_pos > config_.screen_width + config_.screen_width / 2.0f)
         {
             wall.x_dir = -1;
         }

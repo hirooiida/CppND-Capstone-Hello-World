@@ -10,7 +10,7 @@ Renderer::Renderer(Config config)
         std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
     }
 
-    sdl_window_ = SDL_CreateWindow("Fugitive", SDL_WINDOWPOS_CENTERED,
+    sdl_window_ = SDL_CreateWindow("", SDL_WINDOWPOS_CENTERED,
                                    SDL_WINDOWPOS_CENTERED, config_.screen_width, config_.screen_height, 0);
 
     if (nullptr == sdl_window_) {
@@ -34,9 +34,6 @@ Renderer::~Renderer()
 
 void Renderer::Render(Vector2 ego_position, std::vector<Wall> walls, Vector2 food_position)
 {
-    int w, h;
-    SDL_GetWindowSize(sdl_window_, &w, &h);
-
     SDL_SetRenderDrawColor(sdl_renderer_, 0, 0, 0, 255);
     SDL_RenderClear(sdl_renderer_);
 
@@ -48,7 +45,7 @@ void Renderer::Render(Vector2 ego_position, std::vector<Wall> walls, Vector2 foo
             static_cast<int>(wall.x_pos - wall.thickness / 2),
             static_cast<int>(0),
             static_cast<int>(wall.thickness),
-            h
+            static_cast<int>(config_.screen_height)
         };
         SDL_RenderFillRect(sdl_renderer_, &horiz_wall);
 

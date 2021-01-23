@@ -60,7 +60,7 @@ void Renderer::Render(Vector2 ego_position, std::vector<Wall> walls, Vector2 foo
     }
 
     // Ego
-    SDL_SetRenderDrawColor(sdl_renderer_, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(sdl_renderer_, 255, 241, 0, 255);
     SDL_Rect ego{	
 		static_cast<int>(ego_position.x - config_.ego_thickness / 2),
 		static_cast<int>(ego_position.y - config_.ego_thickness / 2),

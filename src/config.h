@@ -8,7 +8,7 @@ struct Config
     int ego_thickness;
     int food_thickness;
     float wall_thickness;
-    int holl_width;
+    float holl_width;
 };
 
 #endif

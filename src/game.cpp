@@ -19,7 +19,7 @@ Game::Game(Config config)
     Wall wall_1{config_.screen_width + config_.screen_width * 0.0f,        // x_pos
                 -1,                                                        // x_dir
                 config_.screen_height / 2.0f - config_.holl_width / 2.0f,  // holl_height
-                150,                                                       // holl_width
+                config_.holl_width,                                        // holl_width
                 550,                                                       // speed
                 config_.wall_thickness                                     // thickness
                 };
@@ -27,14 +27,14 @@ Game::Game(Config config)
     Wall wall_2{config_.screen_width + config_.screen_width * 0.5f,
                 -1,
                 config_.screen_height / 2.0f + config_.holl_width / 2.0f,
-                150,
+                config_.holl_width,
                 550,
                 config_.wall_thickness};
 
     Wall wall_3{config_.screen_width + config_.screen_width * 1.0f,
                 -1,
                 config_.screen_height / 2.0f + config_.holl_width / 2.0f,
-                150,
+                config_.holl_width,
                 550,
                 config_.wall_thickness};
 

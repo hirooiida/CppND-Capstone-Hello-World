@@ -10,7 +10,7 @@ int main() {
                   18,      // ego thickness
                   30,      // food thickness
                   25.0f,   // wall thickness
-                  100      // holl width
+                  150.0f   // holl width
                   };
 
     Renderer renderer(config);

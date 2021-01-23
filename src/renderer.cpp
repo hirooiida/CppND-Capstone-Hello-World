@@ -37,18 +37,10 @@ void Renderer::Render(Vector2 ego_position, std::vector<Wall> walls, Vector2 foo
     int w, h;
     SDL_GetWindowSize(sdl_window_, &w, &h);
 
-    SDL_SetRenderDrawColor(sdl_renderer_, 0x00, 0x00, 0x00, 0xFF);
+    SDL_SetRenderDrawColor(sdl_renderer_, 0, 0, 0, 255);
     SDL_RenderClear(sdl_renderer_);
 
-    SDL_SetRenderDrawColor(sdl_renderer_, 255, 255, 255, 255);
-    SDL_Rect ball{	
-		static_cast<int>(ego_position.x - config_.ego_thickness / 2),
-		static_cast<int>(ego_position.y - config_.ego_thickness / 2),
-		config_.ego_thickness,
-		config_.ego_thickness
-	};
-	SDL_RenderFillRect(sdl_renderer_, &ball);
-
+    // Wall
     for (Wall &wall: walls)
     {
         SDL_SetRenderDrawColor(sdl_renderer_, 255, 255, 255, 255);
@@ -60,7 +52,7 @@ void Renderer::Render(Vector2 ego_position, std::vector<Wall> walls, Vector2 foo
         };
         SDL_RenderFillRect(sdl_renderer_, &horiz_wall);
 
-        SDL_SetRenderDrawColor(sdl_renderer_, 0x00, 0x00, 0x00, 0xFF);
+        SDL_SetRenderDrawColor(sdl_renderer_, 0, 0, 0, 255);
         SDL_Rect horiz_holl{
             static_cast<int>(wall.x_pos - wall.thickness / 2),
             static_cast<int>(wall.holl_height),
@@ -70,6 +62,17 @@ void Renderer::Render(Vector2 ego_position, std::vector<Wall> walls, Vector2 foo
         SDL_RenderFillRect(sdl_renderer_, &horiz_holl);
     }
 
+    // Ego
+    SDL_SetRenderDrawColor(sdl_renderer_, 255, 255, 255, 255);
+    SDL_Rect ego{	
+		static_cast<int>(ego_position.x - config_.ego_thickness / 2),
+		static_cast<int>(ego_position.y - config_.ego_thickness / 2),
+		config_.ego_thickness,
+		config_.ego_thickness
+	};
+	SDL_RenderFillRect(sdl_renderer_, &ego);
+
+    // Food
     SDL_SetRenderDrawColor(sdl_renderer_, 255, 120, 28, 255);
     SDL_Rect food{	
 		static_cast<int>(food_position.x - config_.food_thickness / 2),

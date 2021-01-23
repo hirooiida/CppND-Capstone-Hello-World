@@ -6,6 +6,7 @@ Game::Game(Config config)
 {
     is_running_ = true;
     last_time_ = 0;
+    score_ = 0;
 
     config_ = config;
 
@@ -49,6 +50,7 @@ void Game::Run(Controller controller, Renderer renderer)
         controller.HandleInput(is_running_, ego_dir_);
         UpdateGame();
         renderer.Render(ego_position_, walls_, food_position_);
+        renderer.UpdateWindowTitle(score_);
     } 
 }
 
@@ -96,6 +98,7 @@ void Game::UpdateGame()
     if (f_diff.x < (config_.ego_thickness + config_.food_thickness) / 2.0f
         && f_diff.y < (config_.ego_thickness + config_.food_thickness) / 2.0f)
     {
+        ++score_;
         std::random_device rnd{};
         food_position_.x = rnd() % static_cast<int>(w * 0.6f) + w * 0.2f;
         food_position_.y = rnd() % static_cast<int>(h * 0.6f) + h * 0.2f;
@@ -123,7 +126,6 @@ void Game::UpdateGame()
         if (diff.x < 0) { diff.x *= -1; }
         if (diff.x < wall.thickness && (diff.y > wall.holl_width - config_.ego_thickness || diff.y < 0))
         {
-            std::cout << "Crash" << std::endl;
             is_running_ = false;
         }
     }
@@ -131,3 +133,7 @@ void Game::UpdateGame()
     last_time_ = SDL_GetTicks();
 }
 
+int Game::GetScore()
+{
+    return score_;
+}

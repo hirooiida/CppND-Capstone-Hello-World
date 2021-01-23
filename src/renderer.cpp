@@ -89,3 +89,9 @@ SDL_Window* Renderer::GetWindow()
 {
     return sdl_window_;
 }
+
+void Renderer::UpdateWindowTitle(int score)
+{
+    std::string title{"Score: " + std::to_string(score)};
+    SDL_SetWindowTitle(sdl_window_, title.c_str());
+}

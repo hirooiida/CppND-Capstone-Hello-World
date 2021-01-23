@@ -19,5 +19,7 @@ int main() {
 
     game.Run(controller, renderer);
 
+    std::cout << "Score: " << game.GetScore() << std::endl;
+
     return 0;
 }
